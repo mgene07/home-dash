@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Columns\TextColumn;
 
 class ServiceResource extends Resource
 {
@@ -26,16 +27,8 @@ class ServiceResource extends Resource
         return $form
             ->schema([
                 Select::make('category_id')
-                ->relationship('service_cat', 'name'),
+                ->relationship('service_category', 'name'),
                 TextInput::make('name')
-                // Forms\Components\TextInput::make('category_id')
-                //     ->options(fn(Get $get): Collection => ServiceCat::query())
-                //         ->where('id', $get('id'))
-                //         ->pluck('name', 'id')
-                //     ->searchable()
-                //     ->preload()
-                //     ->live()
-                //     -required(),
             ]);
     }
 
@@ -44,13 +37,15 @@ class ServiceResource extends Resource
         return $table
             ->columns([ 
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('category_id'),
+                TextColumn::make('service_category.name'),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\DeleteAction::make(),
                 Tables\Actions\EditAction::make(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
